@@ -16,6 +16,7 @@ export interface QuickTranslateConfig {
   sourceLanguage: string;
   targetLanguage: string;
   translateVersion: 'v1' | 'v2';
+  viewMode: 'hover' | 'panel' | 'inline';
   normalizeText: boolean;
   normalizeKebabCase: boolean;
   normalizeSnakeCase: boolean;

@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { languages } from './languages';
 import { translate } from './translate';
 
@@ -70,13 +69,13 @@ export async function translateV2(
 
   try {
     const url = `https://translate.google.com/m?tl=${encodeURIComponent(toLang)}&sl=${encodeURIComponent(fromLang)}&q=${encodeURIComponent(input)}`;
-    const { data } = await axios.get<string>(url, {
-      responseType: 'text',
+    const response = await fetch(url, {
       headers: {
         'User-Agent':
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       },
     });
+    const data = await response.text();
 
     const match = data.match(RESULT_CONTAINER_PATTERN);
     const raw = match ? match[1] : '';

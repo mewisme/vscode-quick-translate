@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import { languages } from './languages';
 
 interface GoogleTranslateSuccess {
@@ -41,7 +39,8 @@ export async function translate(
   }
   try {
     const url = `https://translate.google.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(input)}`;
-    const { data } = await axios.get<unknown>(url);
+    const response = await fetch(url);
+    const data = (await response.json()) as unknown;
     const { text, fromLang: detected } = parseResponse(data);
     return { error: false, text, fromLang: detected, toLang, version: 'v1' };
   } catch {

@@ -1,12 +1,12 @@
 import * as vscode from 'vscode';
 
-import type { HoverStateController } from '../hover/hover-state';
+import type { TranslationViewCoordinator } from '../view/renderer';
 
 export function runClearLastTranslationCommand(
-  hoverState: HoverStateController
+  coordinator: TranslationViewCoordinator
 ): () => void {
   return function clearLastTranslation(): void {
-    hoverState.reset();
+    coordinator.clearAll();
     vscode.window.showInformationMessage('Last translation cleared.');
   };
 }

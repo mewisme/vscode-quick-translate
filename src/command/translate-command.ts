@@ -10,6 +10,8 @@ import {
   type TranslateBackendVersion,
   type TranslateResult,
 } from '../types/internal-types';
+import type { RenderContext } from '../types/renderer-types';
+import type { TranslationViewCoordinator } from '../view/renderer';
 
 const LINE_SPLIT = /\r?\n/;
 const BLANK_LINE = /^\s*$/;
@@ -45,6 +47,7 @@ function getTranslateFn(version: 'v1' | 'v2') {
 
 export function runTranslateCommand(
   hoverState: HoverStateController,
+  coordinator: TranslationViewCoordinator,
   options?: { skipNormalization?: boolean }
 ): () => Promise<void> {
   return async function translateSelection(): Promise<void> {
@@ -149,8 +152,18 @@ export function runTranslateCommand(
       normalized: !skipNorm && config.normalizeText,
       version: res.version,
     });
-    hoverState.setShouldShowHover(true);
-    await vscode.commands.executeCommand('editor.action.showHover');
-    hoverState.setShouldShowHover(false);
+
+    const renderContext: RenderContext = {
+      translatedText: textLines,
+      from: fromLang,
+      to: toLang,
+      normalized: !skipNorm && config.normalizeText,
+      editor,
+      selectionRange: range,
+      version: res.version,
+    };
+
+    const renderer = coordinator.getRenderer(config.viewMode);
+    await renderer.render(renderContext);
   };
 }

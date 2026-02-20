@@ -2,7 +2,7 @@
   "name": "vscode-quick-translate",
   "displayName": "VSCode Quick Translate",
   "description": "Translate selected or entered text with inline hover results. Optional normalization for identifiers (camelCase, snake_case, etc.). Copy last translation, normalization preview, and quick settings. Uses Google Translate; no API key required.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "publisher": "mewisme",
   "engines": {
     "vscode": "^1.84.0"
@@ -268,6 +268,21 @@
             "Google Translate mobile page (m?tl=...); parses HTML result-container."
           ],
           "description": "Translate backend: v1 (JSON API) or v2 (mobile page)."
+        },
+        "quickTranslate.viewMode": {
+          "type": "string",
+          "default": "panel",
+          "enum": [
+            "hover",
+            "panel",
+            "inline"
+          ],
+          "enumDescriptions": [
+            "Show translation in a hover tooltip above the selection.",
+            "Show translation in a dedicated side panel.",
+            "Show translation as inline decorations after each selected line."
+          ],
+          "description": "How to display the translation result. Invalid values fall back to hover."
         }
       }
     },
@@ -289,7 +304,7 @@
       },
       {
         "command": "quickTranslate.openSettings",
-        "title": "Quick Translate: Open Settings",
+        "title": "Quick Translate: Open Extension Settings",
         "category": "Quick Translate"
       },
       {
@@ -301,14 +316,52 @@
         "command": "quickTranslate.normalizationPreview",
         "title": "Quick Translate: Normalization Preview",
         "category": "Quick Translate"
+      },
+      {
+        "command": "quickTranslate.toggleNormalization",
+        "title": "Toggle Normalization",
+        "category": "Quick Translate"
+      },
+      {
+        "command": "quickTranslate.switchViewMode",
+        "title": "Switch View Mode",
+        "category": "Quick Translate"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "quickTranslate.menu",
+        "label": "Quick Translate"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "when": "editorHasSelection",
+          "submenu": "quickTranslate.menu",
+          "when": "editorTextFocus && editorHasSelection",
+          "group": "navigation"
+        }
+      ],
+      "quickTranslate.menu": [
+        {
           "command": "quickTranslate.translateSelection",
-          "group": "navigation@99"
+          "when": "editorTextFocus && editorHasSelection",
+          "title": "Translate Selection"
+        },
+        {
+          "command": "quickTranslate.toggleNormalization",
+          "when": "editorTextFocus && editorHasSelection",
+          "title": "Toggle Normalization"
+        },
+        {
+          "command": "quickTranslate.switchViewMode",
+          "when": "editorTextFocus && editorHasSelection",
+          "title": "Switch View Mode"
+        },
+        {
+          "command": "quickTranslate.openSettings",
+          "when": "editorTextFocus && editorHasSelection",
+          "title": "Open Extension Settings"
         }
       ],
       "commandPalette": [
@@ -373,8 +426,6 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
-  "dependencies": {
-    "axios": "^1.13.5"
-  },
+  "dependencies": {},
   "packageManager": "pnpm@10.30.1+sha512.3590e550d5384caa39bd5c7c739f72270234b2f6059e13018f975c313b1eb9fefcc09714048765d4d9efe961382c312e624572c0420762bdc5d5940cdf9be73a"
 }

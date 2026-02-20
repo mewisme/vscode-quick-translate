@@ -6,10 +6,14 @@ export function getQuickTranslateConfig(): QuickTranslateConfig {
   const cfg = vscode.workspace.getConfiguration('quickTranslate');
   const version = cfg.get<string>('translateVersion') ?? 'v2';
   const translateVersion = version === 'v2' ? 'v2' : 'v1';
+  const rawViewMode = cfg.get<string>('viewMode') ?? 'panel';
+  const viewMode: 'hover' | 'panel' | 'inline' =
+    rawViewMode === 'hover' ? 'hover' : rawViewMode === 'inline' ? 'inline' : 'panel';
   return {
     sourceLanguage: (cfg.get<string>('sourceLanguage') ?? 'auto').toLowerCase(),
     targetLanguage: (cfg.get<string>('targetLanguage') ?? 'vi').toLowerCase(),
     translateVersion,
+    viewMode,
     normalizeText: cfg.get<boolean>('normalizeText', true),
     normalizeKebabCase: cfg.get<boolean>('normalizeKebabCase', true),
     normalizeSnakeCase: cfg.get<boolean>('normalizeSnakeCase', true),
