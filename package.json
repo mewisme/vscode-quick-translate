@@ -1,28 +1,38 @@
 {
   "name": "vscode-quick-translate-google-translate-api",
   "displayName": "Quick Translate (Google Translate API)",
-  "description": "Translate selected text via Google Translate API.",
-  "version": "0.0.1",
+  "description": "Translate selected or entered text with inline hover results. Optional normalization for identifiers (camelCase, snake_case, etc.). Copy last translation, normalization preview, and quick settings. Uses Google Translate; no API key required.",
+  "version": "0.1.0",
   "publisher": "mewisme",
   "engines": {
     "vscode": "^1.84.0"
   },
   "license": "MIT",
+  "author": "Nguyen Mau Minh",
   "repository": {
     "type": "git",
     "url": "https://github.com/mewisme/vscode-quick-translate"
   },
   "keywords": [
     "translate",
-    "vscode",
-    "extension"
+    "translation",
+    "google translate",
+    "hover",
+    "normalization",
+    "localization"
   ],
   "icon": "images/icon.png",
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:quickTranslate.translateSelection"
+    "onCommand:quickTranslate.translateSelection",
+    "onCommand:quickTranslate.translateWithoutNormalization",
+    "onCommand:quickTranslate.showLastTranslation",
+    "onCommand:quickTranslate.clearLastTranslation",
+    "onCommand:quickTranslate.openSettings",
+    "onCommand:quickTranslate.copyLastTranslation",
+    "onCommand:quickTranslate.normalizationPreview"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -262,7 +272,38 @@
     "commands": [
       {
         "command": "quickTranslate.translateSelection",
-        "title": "Translate: Selection"
+        "title": "Quick Translate: Translate Selection",
+        "category": "Quick Translate"
+      },
+      {
+        "command": "quickTranslate.translateWithoutNormalization",
+        "title": "Quick Translate: Translate Without Normalization",
+        "category": "Quick Translate"
+      },
+      {
+        "command": "quickTranslate.showLastTranslation",
+        "title": "Quick Translate: Show Last Translation",
+        "category": "Quick Translate"
+      },
+      {
+        "command": "quickTranslate.clearLastTranslation",
+        "title": "Quick Translate: Clear Last Translation",
+        "category": "Quick Translate"
+      },
+      {
+        "command": "quickTranslate.openSettings",
+        "title": "Quick Translate: Open Settings",
+        "category": "Quick Translate"
+      },
+      {
+        "command": "quickTranslate.copyLastTranslation",
+        "title": "Quick Translate: Copy Last Translation",
+        "category": "Quick Translate"
+      },
+      {
+        "command": "quickTranslate.normalizationPreview",
+        "title": "Quick Translate: Normalization Preview",
+        "category": "Quick Translate"
       }
     ],
     "menus": {
@@ -276,14 +317,32 @@
       "commandPalette": [
         {
           "command": "quickTranslate.translateSelection"
+        },
+        {
+          "command": "quickTranslate.translateWithoutNormalization"
+        },
+        {
+          "command": "quickTranslate.showLastTranslation"
+        },
+        {
+          "command": "quickTranslate.clearLastTranslation"
+        },
+        {
+          "command": "quickTranslate.openSettings"
+        },
+        {
+          "command": "quickTranslate.copyLastTranslation"
+        },
+        {
+          "command": "quickTranslate.normalizationPreview"
         }
       ]
     },
     "keybindings": [
       {
         "command": "quickTranslate.translateSelection",
-        "key": "ctrl+alt+t",
-        "mac": "cmd+alt+t",
+        "key": "ctrl+shift+t",
+        "mac": "cmd+shift+t",
         "when": "editorHasSelection && editorTextFocus"
       }
     ]

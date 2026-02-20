@@ -1,53 +1,54 @@
 import * as vscode from 'vscode';
 
-import { translate } from './translator';
+import { runClearLastTranslationCommand } from './command/clear-last-translation-command';
+import { runCopyLastTranslationCommand } from './command/copy-last-translation-command';
+import { runNormalizationPreviewCommand } from './command/normalization-preview-command';
+import { runOpenSettingsCommand } from './command/open-settings-command';
+import { runShowLastTranslationCommand } from './command/show-last-translation-command';
+import { runTranslateCommand } from './command/translate-command';
+import { createHoverState, type HoverStateController } from './hover/hover-state';
+import { registerHoverProvider } from './hover/hover-provider';
 
-export function activate(context: vscode.ExtensionContext) {
-  const cmd = vscode.commands.registerCommand('quickTranslate.translateSelection', async () => {
-    const cfg = vscode.workspace.getConfiguration('quickTranslate');
-    const from = (cfg.get<string>('sourceLanguage') || 'auto').toLowerCase();
-    const to = (cfg.get<string>('targetLanguage') || 'vi').toLowerCase();
-    const modal = !!cfg.get<boolean>('modalPopup');
+let hoverStateController: HoverStateController | undefined;
 
-    const editor = vscode.window.activeTextEditor;
-    const selected = editor?.document.getText(editor.selection) ?? '';
-    const input = selected.trim() || (await vscode.window.showInputBox({
-      prompt: 'Enter the text to translate',
-      placeHolder: 'Type or paste text…'
-    })) || '';
+export function activate(context: vscode.ExtensionContext): void {
+  const hoverState = createHoverState();
+  hoverStateController = hoverState;
 
-    if (!input.trim()) {
-      vscode.window.showInformationMessage('No text to translate.');
-      return;
-    }
-
-    const res = await vscode.window.withProgress(
-      { location: vscode.ProgressLocation.Notification, title: 'Translating…', cancellable: false },
-      async () => {
-        try {
-          return await translate(input, from, to);
-        } catch (e: any) {
-          return { error: true, text: e?.message || 'Unexpected error' };
-        }
-      }
-    );
-
-    if (res?.error) {
-      vscode.window.showErrorMessage(res.text || 'Translation failed.');
-      return;
-    }
-
-    const translated: string = res.text || '';
-    const previewLimit = 4000;
-    const preview = translated.length > previewLimit ? translated.slice(0, previewLimit) + '\n…(truncated)' : translated;
-
-    await vscode.window.showInformationMessage(
-      preview,
-      { modal }
-    );
-  });
-
-  context.subscriptions.push(cmd);
+  context.subscriptions.push(
+    registerHoverProvider(hoverState),
+    vscode.commands.registerCommand(
+      'quickTranslate.translateSelection',
+      runTranslateCommand(hoverState)
+    ),
+    vscode.commands.registerCommand(
+      'quickTranslate.translateWithoutNormalization',
+      runTranslateCommand(hoverState, { skipNormalization: true })
+    ),
+    vscode.commands.registerCommand(
+      'quickTranslate.showLastTranslation',
+      runShowLastTranslationCommand(hoverState)
+    ),
+    vscode.commands.registerCommand(
+      'quickTranslate.clearLastTranslation',
+      runClearLastTranslationCommand(hoverState)
+    ),
+    vscode.commands.registerCommand(
+      'quickTranslate.openSettings',
+      runOpenSettingsCommand()
+    ),
+    vscode.commands.registerCommand(
+      'quickTranslate.copyLastTranslation',
+      runCopyLastTranslationCommand(hoverState)
+    ),
+    vscode.commands.registerCommand(
+      'quickTranslate.normalizationPreview',
+      runNormalizationPreviewCommand(hoverState)
+    )
+  );
 }
 
-export function deactivate() { }
+export function deactivate(): void {
+  hoverStateController?.reset();
+  hoverStateController = undefined;
+}

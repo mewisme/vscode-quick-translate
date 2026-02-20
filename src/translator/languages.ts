@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export const languages = [
   { code: 'auto', name: 'Auto-detect' },
   { code: 'af', name: 'Afrikaans' },
@@ -75,7 +73,7 @@ export const languages = [
   { code: 'fa', name: 'Persian' },
   { code: 'pl', name: 'Polish' },
   { code: 'pt', name: 'Portuguese' },
-  { code: 'ma', name: 'Punjabi (Gurmukhi?)' },   // code hơi lạ, gtx hay dùng 'pa' cho Punjabi
+  { code: 'ma', name: 'Punjabi (Gurmukhi)' },
   { code: 'ro', name: 'Romanian' },
   { code: 'ru', name: 'Russian' },
   { code: 'sm', name: 'Samoan' },
@@ -105,22 +103,7 @@ export const languages = [
   { code: 'xh', name: 'Xhosa' },
   { code: 'yi', name: 'Yiddish' },
   { code: 'yo', name: 'Yoruba' },
-  { code: 'zu', name: 'Zulu' }
-];
+  { code: 'zu', name: 'Zulu' },
+] as const;
 
-
-type Language = typeof languages[number]['code'];
-export async function translate(input: string, fromLang: Language = 'auto', toLang: Language = 'vi') {
-  if (!languages.some(lang => lang.code === toLang)) {
-    return { error: true, text: 'Không hỗ trợ ngôn ngữ này.' };
-  }
-  try {
-    const { data } = await axios.get(encodeURI(`https://translate.google.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${input}`));
-
-    const text = (data[0] as Array<Array<string>>).map(item => item[0]).join('');
-    const fromLangExtracted = data[2] === (data[8] as Array<Array<string>>)[0][0] ? data[2] : (data[8] as Array<Array<string>>)[0][0];
-    return { error: false, text, fromLang: fromLangExtracted, toLang: toLang };
-  } catch (error) {
-    return { error: true, text: 'Đã có lỗi xảy ra.' };
-  }
-}
+export type Language = (typeof languages)[number]['code'];
