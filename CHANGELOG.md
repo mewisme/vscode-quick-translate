@@ -1,16 +1,22 @@
 # Changelog
 
-All notable changes to this extension will be documented in this file.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### 0.1.6 (2026-02-20)
 
-## [Unreleased]
+
+### Fixed
+
+* update display name in package.json to "VSCode Quick Translate" ([00cc5ee](https://github.com/mewisme/vscode-quick-translate/commit/00cc5ee8766bfef572a03adfe15f13836953d133))
+
 
 ### Added
 
-- **View mode selection**: `quickTranslate.viewMode` setting (`hover` | `panel` | `inline`) to choose how translation results are displayed.
-- Inline renderer: show translation as inline decorations after each selected line.
+* **0.1.2:** add translate backend v2, config, tests; remove Show Last Translation ([059d91d](https://github.com/mewisme/vscode-quick-translate/commit/059d91ddfaa0cc4debb65f4c45a462f458e99450))
+* **0.1.3:** enhance publishing scripts, update README, and reorganize tests ([63b064d](https://github.com/mewisme/vscode-quick-translate/commit/63b064d9845b0d6138721d7730f106f8b1e99520))
+* enhance translation extension with inline hover, normalization options, and new commands ([9d8851c](https://github.com/mewisme/vscode-quick-translate/commit/9d8851c251a8b59f6944a3c6d03683786d2c6214))
+* init commit ([38a87f1](https://github.com/mewisme/vscode-quick-translate/commit/38a87f1b38a1a2078b81fa76493e4d3e99779a51))
+* **view:** add view mode selection (hover, panel, inline) and inline renderer ([377d94c](https://github.com/mewisme/vscode-quick-translate/commit/377d94c1d946d3374325aa26a75a4323909b9dcb))
 
 ## [0.1.5]
 
