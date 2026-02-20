@@ -1,1 +1,1 @@
-pnpm test
+pnpm vscode:prepublish
