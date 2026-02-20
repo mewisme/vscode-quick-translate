@@ -2,7 +2,7 @@
   "name": "vscode-quick-translate",
   "displayName": "VSCode Quick Translate",
   "description": "Translate selected or entered text with inline hover results. Optional normalization for identifiers (camelCase, snake_case, etc.). Copy last translation, normalization preview, and quick settings. Uses Google Translate; no API key required.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "mewisme",
   "engines": {
     "vscode": "^1.84.0"
@@ -28,7 +28,6 @@
   "activationEvents": [
     "onCommand:quickTranslate.translateSelection",
     "onCommand:quickTranslate.translateWithoutNormalization",
-    "onCommand:quickTranslate.showLastTranslation",
     "onCommand:quickTranslate.clearLastTranslation",
     "onCommand:quickTranslate.openSettings",
     "onCommand:quickTranslate.copyLastTranslation",
@@ -262,10 +261,18 @@
           ],
           "description": "Target language."
         },
-        "quickTranslate.modalPopup": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show popup in modal."
+        "quickTranslate.translateVersion": {
+          "type": "string",
+          "default": "v1",
+          "enum": [
+            "v1",
+            "v2"
+          ],
+          "enumDescriptions": [
+            "Google Translate JSON API (translate_a/single).",
+            "Google Translate mobile page (m?tl=...); parses HTML result-container."
+          ],
+          "description": "Translate backend: v1 (JSON API) or v2 (mobile page)."
         }
       }
     },
@@ -278,11 +285,6 @@
       {
         "command": "quickTranslate.translateWithoutNormalization",
         "title": "Quick Translate: Translate Without Normalization",
-        "category": "Quick Translate"
-      },
-      {
-        "command": "quickTranslate.showLastTranslation",
-        "title": "Quick Translate: Show Last Translation",
         "category": "Quick Translate"
       },
       {
@@ -322,9 +324,6 @@
           "command": "quickTranslate.translateWithoutNormalization"
         },
         {
-          "command": "quickTranslate.showLastTranslation"
-        },
-        {
           "command": "quickTranslate.clearLastTranslation"
         },
         {
@@ -359,7 +358,8 @@
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "test:translate": "node --test --import tsx test/translate.test.ts"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
@@ -372,6 +372,7 @@
     "esbuild": "^0.25.12",
     "eslint": "^9.39.2",
     "npm-run-all": "^4.1.5",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {

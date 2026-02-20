@@ -4,19 +4,16 @@ import { runClearLastTranslationCommand } from './command/clear-last-translation
 import { runCopyLastTranslationCommand } from './command/copy-last-translation-command';
 import { runNormalizationPreviewCommand } from './command/normalization-preview-command';
 import { runOpenSettingsCommand } from './command/open-settings-command';
-import { runShowLastTranslationCommand } from './command/show-last-translation-command';
 import { runTranslateCommand } from './command/translate-command';
-import { createHoverState, type HoverStateController } from './hover/hover-state';
+import { createHoverState } from './hover/hover-state';
 import { registerHoverProvider } from './hover/hover-provider';
-
-let hoverStateController: HoverStateController | undefined;
 
 export function activate(context: vscode.ExtensionContext): void {
   const hoverState = createHoverState();
-  hoverStateController = hoverState;
 
   context.subscriptions.push(
     registerHoverProvider(hoverState),
+    new vscode.Disposable(() => hoverState.reset()),
     vscode.commands.registerCommand(
       'quickTranslate.translateSelection',
       runTranslateCommand(hoverState)
@@ -24,10 +21,6 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand(
       'quickTranslate.translateWithoutNormalization',
       runTranslateCommand(hoverState, { skipNormalization: true })
-    ),
-    vscode.commands.registerCommand(
-      'quickTranslate.showLastTranslation',
-      runShowLastTranslationCommand(hoverState)
     ),
     vscode.commands.registerCommand(
       'quickTranslate.clearLastTranslation',
@@ -48,7 +41,4 @@ export function activate(context: vscode.ExtensionContext): void {
   );
 }
 
-export function deactivate(): void {
-  hoverStateController?.reset();
-  hoverStateController = undefined;
-}
+export function deactivate(): void {}

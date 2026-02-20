@@ -2,6 +2,25 @@
 
 All notable changes to this extension will be documented in this file.
 
+## [0.1.2]
+
+### Added
+
+- **Translate backend v2**: optional Google Translate mobile-page backend (`translate-v2`) that parses the HTML result-container; falls back to v1 on empty result or error.
+- Setting `quickTranslate.translateVersion` (`"v1"` | `"v2"`) to choose backend; default is `"v2"`.
+- Tests for translate functions (v1 and v2) in `test/translate.test.ts`; run with `pnpm run test:translate` (requires network).
+
+### Changed
+
+- Translate command uses configurable backend (v1 or v2) via `getTranslateFn(config.translateVersion)`.
+- Config type and `getQuickTranslateConfig()` include `translateVersion`; translator index exports `translateV2`.
+- Hover/result types and display support `version: 'v1' | 'v2'` on success.
+
+### Removed
+
+- **Quick Translate: Show Last Translation** command and `show-last-translation-command` module.
+- `quickTranslate.modalPopup` configuration (legacy; was unused).
+
 ## [0.1.1]
 
 ### Changed

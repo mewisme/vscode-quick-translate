@@ -4,9 +4,12 @@ import type { QuickTranslateConfig } from '../types/internal-types';
 
 export function getQuickTranslateConfig(): QuickTranslateConfig {
   const cfg = vscode.workspace.getConfiguration('quickTranslate');
+  const version = cfg.get<string>('translateVersion') ?? 'v2';
+  const translateVersion = version === 'v2' ? 'v2' : 'v1';
   return {
     sourceLanguage: (cfg.get<string>('sourceLanguage') ?? 'auto').toLowerCase(),
     targetLanguage: (cfg.get<string>('targetLanguage') ?? 'vi').toLowerCase(),
+    translateVersion,
     normalizeText: cfg.get<boolean>('normalizeText', true),
     normalizeKebabCase: cfg.get<boolean>('normalizeKebabCase', true),
     normalizeSnakeCase: cfg.get<boolean>('normalizeSnakeCase', true),

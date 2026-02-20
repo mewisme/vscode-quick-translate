@@ -7,6 +7,7 @@ interface GoogleTranslateSuccess {
   text: string;
   fromLang: string;
   toLang: string;
+  version: 'v1';
 }
 
 interface GoogleTranslateError {
@@ -42,7 +43,7 @@ export async function translate(
     const url = `https://translate.google.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(input)}`;
     const { data } = await axios.get<unknown>(url);
     const { text, fromLang: detected } = parseResponse(data);
-    return { error: false, text, fromLang: detected, toLang };
+    return { error: false, text, fromLang: detected, toLang, version: 'v1' };
   } catch {
     return { error: true, text: 'An error occurred.' };
   }

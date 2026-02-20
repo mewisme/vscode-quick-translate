@@ -9,10 +9,11 @@ function escapeMarkdownInline(raw: string): string {
 }
 
 function buildHoverMarkdown(state: {
-  text: string;
+  text: string[];
   from: string;
   to: string;
   normalized?: boolean;
+  version?: 'v1' | 'v2';
 }): vscode.MarkdownString {
   const md = new vscode.MarkdownString();
   md.isTrusted = false;
@@ -21,7 +22,11 @@ function buildHoverMarkdown(state: {
   const toEsc = escapeMarkdownInline(state.to);
 
   md.appendMarkdown('**Translation**\n\n');
-  md.appendMarkdown(`Source \`${fromEsc}\` → Target \`${toEsc}\`\n\n`);
+  md.appendMarkdown(`Source \`${fromEsc}\` → Target \`${toEsc}\``);
+  if (state.version) {
+    md.appendMarkdown(` · \`${state.version}\``);
+  }
+  md.appendMarkdown('\n\n');
 
   if (state.normalized === true) {
     md.appendMarkdown('*Normalization applied*\n\n');
@@ -30,11 +35,13 @@ function buildHoverMarkdown(state: {
   md.appendMarkdown('---\n\n');
   md.appendMarkdown('Translation\n\n');
 
+  const fullText = state.text.join('\n');
   const displayText =
-    state.text.length > HOVER_DISPLAY_MAX_LENGTH
-      ? state.text.slice(0, HOVER_DISPLAY_MAX_LENGTH) + '\n\n— truncated'
-      : state.text;
-  md.appendCodeblock(displayText, 'text');
+    fullText.length > HOVER_DISPLAY_MAX_LENGTH
+      ? fullText.slice(0, HOVER_DISPLAY_MAX_LENGTH) + '\n\n— truncated'
+      : fullText;
+  const codeBlockContent = displayText.replace(/`/g, '\`');
+  md.appendMarkdown('```text\n' + codeBlockContent + '\n```');
 
   return md;
 }

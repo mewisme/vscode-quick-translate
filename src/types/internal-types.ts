@@ -15,6 +15,7 @@ export interface NormalizeOptions {
 export interface QuickTranslateConfig {
   sourceLanguage: string;
   targetLanguage: string;
+  translateVersion: 'v1' | 'v2';
   normalizeText: boolean;
   normalizeKebabCase: boolean;
   normalizeSnakeCase: boolean;
@@ -28,16 +29,19 @@ export interface QuickTranslateConfig {
   trimExtraSpaces: boolean;
 }
 
+export type TranslateBackendVersion = 'v1' | 'v2';
+
 export interface TranslateSuccess {
   error: false;
-  text: string;
+  text: string[];
   fromLang?: string;
   toLang?: string;
+  version: TranslateBackendVersion;
 }
 
 export interface TranslateError {
   error: true;
-  text: string;
+  text: string[];
 }
 
 export type TranslateResult = TranslateSuccess | TranslateError;

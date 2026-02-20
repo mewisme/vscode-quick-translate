@@ -11,7 +11,7 @@ export function runCopyLastTranslationCommand(
       vscode.window.showInformationMessage('No translation to copy.');
       return;
     }
-    await vscode.env.clipboard.writeText(state.text);
+    await vscode.env.clipboard.writeText((state.text ?? []).join('\n'));
     vscode.window.showInformationMessage('Translation copied to clipboard.');
   };
 }

@@ -46,7 +46,6 @@ All keys live under the `quickTranslate` namespace.
 |-----|------|---------|-------------|
 | `quickTranslate.sourceLanguage` | string | `"auto"` | Source language code. Use `auto` for auto-detection. |
 | `quickTranslate.targetLanguage` | string | `"vi"` | Target language code. |
-| `quickTranslate.modalPopup` | boolean | `true` | Legacy; no longer affects the translation result (which is shown in hover). |
 | `quickTranslate.normalizeText` | boolean | `true` | When false, normalization is skipped and the raw input is sent to the API. |
 | `quickTranslate.normalizeCamelCase` | boolean | `true` | Split at camelCase boundaries. |
 | `quickTranslate.normalizePascalCase` | boolean | `true` | Split at PascalCase boundaries. |
@@ -81,7 +80,6 @@ All commands appear in the Command Palette under the category "Quick Translate".
 |------------|--------|------------|-------------|
 | `quickTranslate.translateSelection` | Quick Translate: Translate Selection | `Ctrl+Shift+T` / `Cmd+Shift+T` when `editorHasSelection && editorTextFocus` | Translates selection or manual input; uses config-driven normalization; shows result in hover. Also on editor context menu when there is a selection. |
 | `quickTranslate.translateWithoutNormalization` | Quick Translate: Translate Without Normalization | — | Same as Translate Selection but skips the normalization pipeline for this run. |
-| `quickTranslate.showLastTranslation` | Quick Translate: Show Last Translation | — | Re-triggers the hover at the last translated range. No-op if no translation has been run yet. |
 | `quickTranslate.clearLastTranslation` | Quick Translate: Clear Last Translation | — | Clears the stored translation and hover state. |
 | `quickTranslate.openSettings` | Quick Translate: Open Settings | — | Opens Settings filtered to Quick Translate options. |
 | `quickTranslate.copyLastTranslation` | Quick Translate: Copy Last Translation | — | Copies the last translation text to the clipboard. No-op if none. |
