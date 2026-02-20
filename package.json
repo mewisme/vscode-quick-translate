@@ -2,7 +2,7 @@
   "name": "vscode-quick-translate",
   "displayName": "VSCode Quick Translate",
   "description": "Translate selected or entered text with inline hover results. Optional normalization for identifiers (camelCase, snake_case, etc.). Copy last translation, normalization preview, and quick settings. Uses Google Translate; no API key required.",
-  "version": "0.1.6",
+  "version": "0.1.5",
   "publisher": "mewisme",
   "engines": {
     "vscode": "^1.84.0"
@@ -395,6 +395,11 @@
     ]
   },
   "scripts": {
+    "release": "standard-version",
+    "release:minor": "standard-version --release-as minor",
+    "release:major": "standard-version --release-as major",
+    "release:patch": "standard-version --release-as patch",
+    "release:dry": "standard-version --dry-run",
     "vscode:prepublish": "pnpm run package",
     "publish:vsce": "pnpm dlx vsce publish --no-dependencies",
     "publish:ovsx": "pnpm dlx ovsx publish --no-dependencies",
@@ -410,9 +415,12 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vscode-test",
-    "test:translate": "node --test --import tsx src/test/translate.test.ts"
+    "test:translate": "node --test --import tsx src/test/translate.test.ts",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.2",
+    "@commitlint/config-conventional": "^20.4.2",
     "@types/mocha": "^10.0.10",
     "@types/node": "~20.19.33",
     "@types/vscode": "^1.84.0",
@@ -422,10 +430,11 @@
     "@vscode/test-electron": "^2.5.2",
     "esbuild": "^0.25.12",
     "eslint": "^9.39.2",
+    "husky": "^9.1.7",
     "npm-run-all": "^4.1.5",
+    "standard-version": "^9.5.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
-  "dependencies": {},
   "packageManager": "pnpm@10.30.1+sha512.3590e550d5384caa39bd5c7c739f72270234b2f6059e13018f975c313b1eb9fefcc09714048765d4d9efe961382c312e624572c0420762bdc5d5940cdf9be73a"
 }

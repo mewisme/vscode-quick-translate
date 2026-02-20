@@ -1,6 +1,16 @@
-# Change Log
+# Changelog
 
 All notable changes to this extension will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+
+- **View mode selection**: `quickTranslate.viewMode` setting (`hover` | `panel` | `inline`) to choose how translation results are displayed.
+- Inline renderer: show translation as inline decorations after each selected line.
 
 ## [0.1.5]
 
@@ -85,3 +95,13 @@ All notable changes to this extension will be documented in this file.
 ## [0.0.1]
 
 - Initial release: translate selection via popup, default auto to Vietnamese.
+
+[Unreleased]: https://github.com/mewisme/vscode-quick-translate/compare/v0.1.6...HEAD
+[0.1.6]: https://github.com/mewisme/vscode-quick-translate/compare/v0.1.5...v0.1.6
+[0.1.5]: https://github.com/mewisme/vscode-quick-translate/compare/v0.1.4...v0.1.5
+[0.1.4]: https://github.com/mewisme/vscode-quick-translate/compare/v0.1.3...v0.1.4
+[0.1.3]: https://github.com/mewisme/vscode-quick-translate/compare/v0.1.2...v0.1.3
+[0.1.2]: https://github.com/mewisme/vscode-quick-translate/compare/v0.1.1...v0.1.2
+[0.1.1]: https://github.com/mewisme/vscode-quick-translate/compare/v0.1.0...v0.1.1
+[0.1.0]: https://github.com/mewisme/vscode-quick-translate/compare/v0.0.1...v0.1.0
+[0.0.1]: https://github.com/mewisme/vscode-quick-translate/releases/tag/v0.0.1
