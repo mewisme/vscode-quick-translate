@@ -118,6 +118,7 @@ export class InlineRenderer implements TranslationRenderer {
         { undoStopBefore: false, undoStopAfter: true }
       );
       void editor.setDecorations(this.blockDecoration, []);
+      void editor.document.save();
     } catch {
       // ignore if document changed
     }
