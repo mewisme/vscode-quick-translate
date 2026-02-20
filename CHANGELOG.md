@@ -2,6 +2,12 @@
 
 All notable changes to this extension will be documented in this file.
 
+## [0.1.4]
+
+### Changed
+
+- Extension icon updated (`images/icon.png`).
+
 ## [0.1.3]
 
 ### Added
