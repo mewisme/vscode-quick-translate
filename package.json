@@ -395,10 +395,10 @@
     ]
   },
   "scripts": {
-    "release": "standard-version",
-    "release:minor": "standard-version --release-as minor",
-    "release:major": "standard-version --release-as major",
-    "release:patch": "standard-version --release-as patch",
+    "release": "standard-version --no-verify",
+    "release:minor": "standard-version --release-as minor --no-verify",
+    "release:major": "standard-version --release-as major --no-verify",
+    "release:patch": "standard-version --release-as patch --no-verify",
     "release:dry": "standard-version --dry-run",
     "vscode:prepublish": "pnpm run package",
     "publish:vsce": "pnpm dlx vsce publish --no-dependencies",

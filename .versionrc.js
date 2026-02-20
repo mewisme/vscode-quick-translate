@@ -15,7 +15,7 @@ module.exports = {
   ],
   commitUrlFormat: 'https://github.com/mewisme/vscode-quick-translate/commit/{{hash}}',
   compareUrlFormat:
-    'https://github.com/mewisme/vscode-quick-translate/compare/{{previousHash}}...{{currentHash}}',
+    'https://github.com/mewisme/vscode-quick-translate/compare/{{previousTag}}...{{currentTag}}',
   issueUrlFormat: 'https://github.com/mewisme/vscode-quick-translate/issues/{{id}}',
   releaseCommitMessageFormat: 'chore(release): {{currentTag}}',
   skip: {
