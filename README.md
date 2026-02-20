@@ -46,6 +46,7 @@ All keys live under the `quickTranslate` namespace.
 |-----|------|---------|-------------|
 | `quickTranslate.sourceLanguage` | string | `"auto"` | Source language code. Use `auto` for auto-detection. |
 | `quickTranslate.targetLanguage` | string | `"vi"` | Target language code. |
+| `quickTranslate.translateVersion` | string | `"v2"` | Backend: `"v1"` (JSON API translate_a/single) or `"v2"` (mobile page; parses HTML result). v2 falls back to v1 on empty result or error. |
 | `quickTranslate.normalizeText` | boolean | `true` | When false, normalization is skipped and the raw input is sent to the API. |
 | `quickTranslate.normalizeCamelCase` | boolean | `true` | Split at camelCase boundaries. |
 | `quickTranslate.normalizePascalCase` | boolean | `true` | Split at PascalCase boundaries. |
@@ -64,6 +65,7 @@ Example `settings.json`:
 {
   "quickTranslate.sourceLanguage": "auto",
   "quickTranslate.targetLanguage": "en",
+  "quickTranslate.translateVersion": "v2",
   "quickTranslate.normalizeText": true,
   "quickTranslate.normalizeSnakeCase": true,
   "quickTranslate.normalizeNumberBoundaries": true
@@ -103,12 +105,13 @@ Execution of the main command: reads config, resolves input (selection or input 
 
 ## Technical Notes
 
-- The extension uses the Google Translate unofficial web endpoint (translate_a/single). No API key is required. Network access is required.
-- Translation is implemented via a single async function; the extension does not add other translation surfaces.
+- The extension supports two backends (selectable via `quickTranslate.translateVersion`): **v1** uses the Google Translate JSON endpoint (translate_a/single); **v2** uses the mobile page and parses the HTML result-container, with fallback to v1 on empty result or error. No API key is required. Network access is required.
+- Translation is implemented via configurable v1/v2 async functions; the extension does not add other translation surfaces.
 - Result display uses the VSCode HoverProvider API. The extension registers a hover provider for all languages (`*`) and returns content only when the request came from its own command and the hover position is inside the stored range.
 - Progress is shown with `vscode.window.withProgress` and a notification location.
 - The extension does not insert or replace text in the editor. It does not use a WebView, CodeLens, or decorations for the translation result.
 - Normalization is implemented with regular expressions and string methods only; no extra dependencies. Config is read once per command and passed into the normalizer.
+- Translate backends can be exercised with `pnpm run test:translate` (requires network; hits Google Translate).
 
 ## Limitations
 

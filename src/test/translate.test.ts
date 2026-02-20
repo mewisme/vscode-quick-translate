@@ -1,3 +1,5 @@
+import { translate, translateV2 } from '../translator';
+
 /**
  * Tests for translate functions only (v1, v2).
  * Run: pnpm run test:translate
@@ -5,8 +7,6 @@
  */
 import assert from 'node:assert';
 import test from 'node:test';
-
-import { translate, translateV2 } from '../src/translator';
 
 const TIMEOUT_MS = 15_000;
 const SAMPLE = 'hello';

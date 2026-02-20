@@ -2,6 +2,19 @@
 
 All notable changes to this extension will be documented in this file.
 
+## [0.1.3]
+
+### Added
+
+- Publish scripts in `package.json`: `publish:vsce`, `publish:ovsx`, and `vscode:publish` (runs both via npm-run-all) for publishing to the marketplace and Open VSX.
+
+### Changed
+
+- **README**: Documented `quickTranslate.translateVersion` in the configuration table and example; updated Technical Notes to describe v1/v2 backends and added note about `pnpm run test:translate`.
+- **.vscodeignore**: Exclude `src/test/**` from the packaged extension.
+- **tsconfig.json**: Formatting only (indentation).
+- Translate tests moved from `test/translate.test.ts` to `src/test/translate.test.ts`; `test:translate` script updated to the new path.
+
 ## [0.1.2]
 
 ### Added

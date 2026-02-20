@@ -2,7 +2,7 @@
   "name": "vscode-quick-translate",
   "displayName": "VSCode Quick Translate",
   "description": "Translate selected or entered text with inline hover results. Optional normalization for identifiers (camelCase, snake_case, etc.). Copy last translation, normalization preview, and quick settings. Uses Google Translate; no API key required.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "publisher": "mewisme",
   "engines": {
     "vscode": "^1.84.0"
@@ -348,6 +348,9 @@
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
+    "publish:vsce": "pnpm dlx vsce publish --no-dependencies",
+    "publish:ovsx": "pnpm dlx ovsx publish --no-dependencies",
+    "vscode:publish": "npm-run-all publish:*",
     "compile": "pnpm run check-types && pnpm run lint && node esbuild.js",
     "watch": "npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.js --watch",
@@ -359,7 +362,7 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint src",
     "test": "vscode-test",
-    "test:translate": "node --test --import tsx test/translate.test.ts"
+    "test:translate": "node --test --import tsx src/test/translate.test.ts"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
