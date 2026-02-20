@@ -29,20 +29,20 @@ All notable changes to this project will be documented in this file. See [standa
 * init commit ([38a87f1](https://github.com/mewisme/vscode-quick-translate/commit/38a87f1b38a1a2078b81fa76493e4d3e99779a51))
 * **view:** add view mode selection (hover, panel, inline) and inline renderer ([377d94c](https://github.com/mewisme/vscode-quick-translate/commit/377d94c1d946d3374325aa26a75a4323909b9dcb))
 
-## [0.1.5]
+## 0.1.5
 
 ### Changed
 
 - **Activation**: Extension now activates with `onStartupFinished` instead of on first command, so the first translation no longer has a startup delay.
 - **Hover**: Hover is shown only when the translate or normalization-preview command explicitly triggers it. Strict guards in the hover provider (shouldShowHover, lastRange, position inside range) reduce merge/collision with other hover providers (e.g. GitLens). Hover intent is cleared immediately after showing and when the active editor or selection changes to avoid stale hover.
 
-## [0.1.4]
+## 0.1.4
 
 ### Changed
 
 - Extension icon updated (`images/icon.png`).
 
-## [0.1.3]
+## 0.1.3
 
 ### Added
 
@@ -55,7 +55,7 @@ All notable changes to this project will be documented in this file. See [standa
 - **tsconfig.json**: Formatting only (indentation).
 - Translate tests moved from `test/translate.test.ts` to `src/test/translate.test.ts`; `test:translate` script updated to the new path.
 
-## [0.1.2]
+## 0.1.2
 
 ### Added
 
@@ -74,14 +74,14 @@ All notable changes to this project will be documented in this file. See [standa
 - **Quick Translate: Show Last Translation** command and `show-last-translation-command` module.
 - `quickTranslate.modalPopup` configuration (legacy; was unused).
 
-## [0.1.1]
+## 0.1.1
 
 ### Changed
 
 - Bump extension version to 0.1.1.
 - Require VS Code `^1.84.0` in `engines.vscode`.
 
-## [0.1.0]
+## 0.1.0
 
 ### Added
 
@@ -109,6 +109,6 @@ All notable changes to this project will be documented in this file. See [standa
 
 - Popup for successful translation (replaced by hover).
 
-## [0.0.1]
+## 0.0.1
 
 - Initial release: translate selection via popup, default auto to Vietnamese.
