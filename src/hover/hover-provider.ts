@@ -51,11 +51,20 @@ function createProvideHover(controller: HoverStateController) {
     doc: vscode.TextDocument,
     position: vscode.Position
   ): vscode.ProviderResult<vscode.Hover> {
-    if (!controller.getShouldShowHover()) { return; }
+    if (!controller.getShouldShowHover()) {
+      return;
+    }
     const state = controller.getState();
-    if (!state) { return; }
-    if (doc.uri.toString() !== state.docUri) { return; }
-    if (position.compareTo(state.range.start) < 0 || position.compareTo(state.range.end) > 0) { return; }
+    const lastRange = state?.range;
+    if (lastRange === undefined || state === undefined) {
+      return;
+    }
+    if (doc.uri.toString() !== state.docUri) {
+      return;
+    }
+    if (position.compareTo(lastRange.start) < 0 || position.compareTo(lastRange.end) >= 0) {
+      return;
+    }
     return new vscode.Hover(buildHoverMarkdown(state), state.range);
   };
 }

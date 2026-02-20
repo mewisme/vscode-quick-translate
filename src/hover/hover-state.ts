@@ -1,8 +1,5 @@
 import * as vscode from 'vscode';
 
-/** Delay (ms) before clearing shouldShowHover so the hover provider has time to run. */
-export const HOVER_RESET_DELAY_MS = 100;
-
 export type TranslateBackendVersion = 'v1' | 'v2';
 
 export interface HoverStateData {

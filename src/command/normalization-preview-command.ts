@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 
 import { getQuickTranslateConfig } from '../config/get-config';
-import { HOVER_RESET_DELAY_MS, type HoverStateController } from '../hover/hover-state';
+import type { HoverStateController } from '../hover/hover-state';
 import { getNormalizeOptions } from '../normalize/normalize-config';
 import { normalizeInput } from '../normalize/normalize-input';
 
@@ -41,12 +41,7 @@ export function runNormalizationPreviewCommand(
       docUri: editor.document.uri.toString(),
     });
     hoverState.setShouldShowHover(true);
-    const versionAtShow = hoverState.getStateVersion();
     await vscode.commands.executeCommand('editor.action.showHover');
-    setTimeout(() => {
-      if (hoverState.getStateVersion() === versionAtShow) {
-        hoverState.setShouldShowHover(false);
-      }
-    }, HOVER_RESET_DELAY_MS);
+    hoverState.setShouldShowHover(false);
   };
 }

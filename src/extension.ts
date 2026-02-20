@@ -14,6 +14,8 @@ export function activate(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
     registerHoverProvider(hoverState),
     new vscode.Disposable(() => hoverState.reset()),
+    vscode.window.onDidChangeActiveTextEditor(() => hoverState.setShouldShowHover(false)),
+    vscode.window.onDidChangeTextEditorSelection(() => hoverState.setShouldShowHover(false)),
     vscode.commands.registerCommand(
       'quickTranslate.translateSelection',
       runTranslateCommand(hoverState)

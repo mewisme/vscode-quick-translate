@@ -2,6 +2,13 @@
 
 All notable changes to this extension will be documented in this file.
 
+## [0.1.5]
+
+### Changed
+
+- **Activation**: Extension now activates with `onStartupFinished` instead of on first command, so the first translation no longer has a startup delay.
+- **Hover**: Hover is shown only when the translate or normalization-preview command explicitly triggers it. Strict guards in the hover provider (shouldShowHover, lastRange, position inside range) reduce merge/collision with other hover providers (e.g. GitLens). Hover intent is cleared immediately after showing and when the active editor or selection changes to avoid stale hover.
+
 ## [0.1.4]
 
 ### Changed
