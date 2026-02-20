@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.9](https://github.com/mewisme/vscode-quick-translate/compare/v0.1.8...v0.1.9) (2026-02-20)
+
+
+### Fixed
+
+* ensure document is saved after setting decorations in inline renderer ([7f2dffc](https://github.com/mewisme/vscode-quick-translate/commit/7f2dffc7ccd717fd64955e7af0638437f7ce0937))
+
 ### [0.1.8](https://github.com/mewisme/vscode-quick-translate/compare/v0.1.7...v0.1.8) (2026-02-20)
 
 ### [0.1.7](https://github.com/mewisme/vscode-quick-translate/compare/v0.1.6...v0.1.7) (2026-02-20)
