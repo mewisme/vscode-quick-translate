@@ -2,6 +2,8 @@
 
 Translate selected or entered text via Google Translate and view the result in an inline hover. Intended for quick lookups while editing, not for replacing human translation.
 
+**Requires VS Code 1.84.0 or newer.**
+
 ## Overview
 
 The extension addresses the need to translate short passages (identifiers, labels, error messages, or snippets) without leaving the editor. Translation is requested explicitly by running the command; the result is shown in a hover at the selection or cursor so you can keep context.

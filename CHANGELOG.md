@@ -2,6 +2,13 @@
 
 All notable changes to this extension will be documented in this file.
 
+## [0.1.1]
+
+### Changed
+
+- Bump extension version to 0.1.1.
+- Require VS Code `^1.84.0` in `engines.vscode`.
+
 ## [0.1.0]
 
 ### Added
