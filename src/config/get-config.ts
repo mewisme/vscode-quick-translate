@@ -25,5 +25,6 @@ export function getQuickTranslateConfig(): QuickTranslateConfig {
     normalizeAcronyms: cfg.get<boolean>('normalizeAcronyms', true),
     normalizeNumberBoundaries: cfg.get<boolean>('normalizeNumberBoundaries', true),
     trimExtraSpaces: cfg.get<boolean>('trimExtraSpaces', true),
+    inlineSave: cfg.get<boolean>('inlineSave', false),
   };
 }

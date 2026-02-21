@@ -8,15 +8,21 @@ import { runClearLastTranslationCommand } from './command/clear-last-translation
 import { runCopyLastTranslationCommand } from './command/copy-last-translation-command';
 import { runNormalizationPreviewCommand } from './command/normalization-preview-command';
 import { runOpenSettingsCommand } from './command/open-settings-command';
+import { runRerunTranslationCommand } from './command/rerun-translation-command';
 import { runSwitchViewModeCommand } from './command/switch-view-mode-command';
 import { runToggleNormalizationCommand } from './command/toggle-normalization-command';
 import { runTranslateCommand } from './command/translate-command';
+import { disposeOutputChannel, initOutputChannel } from './output-channel';
+import { createTargetLanguageStatusBar } from './status-bar';
 
 export function activate(context: vscode.ExtensionContext): void {
+  initOutputChannel();
   const hoverState = createHoverState();
   const coordinator = createTranslationViewCoordinator(hoverState);
 
   void preloadTranslator();
+
+  createTargetLanguageStatusBar(context);
 
   context.subscriptions.push(
     registerHoverProvider(hoverState),
@@ -55,8 +61,18 @@ export function activate(context: vscode.ExtensionContext): void {
     vscode.commands.registerCommand(
       'quickTranslate.switchViewMode',
       runSwitchViewModeCommand()
+    ),
+    vscode.commands.registerCommand(
+      'quickTranslate.rerunLastTranslation',
+      runRerunTranslationCommand(hoverState, coordinator)
+    ),
+    vscode.commands.registerCommand(
+      'quickTranslate.acceptTranslation',
+      () => coordinator.acceptInlineTranslation()
     )
   );
 }
 
-export function deactivate(): void { }
+export function deactivate(): void {
+  disposeOutputChannel();
+}

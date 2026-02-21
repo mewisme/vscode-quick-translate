@@ -10,6 +10,8 @@ export interface HoverStateData {
   docUri: string;
   normalized?: boolean;
   version?: TranslateBackendVersion;
+  sourceText?: string;
+  sourceWasAuto?: boolean;
 }
 
 export interface HoverStateController {

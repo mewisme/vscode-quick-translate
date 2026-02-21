@@ -6,6 +6,7 @@ import { PanelRenderer } from './panel-renderer';
 
 export interface TranslationViewCoordinator {
   getRenderer(mode: ViewMode): TranslationRenderer;
+  acceptInlineTranslation(): Promise<void>;
   clearAll(): void;
   dispose(): void;
 }
@@ -27,6 +28,10 @@ export function createTranslationViewCoordinator(
         default:
           return hoverRenderer;
       }
+    },
+
+    async acceptInlineTranslation(): Promise<void> {
+      await inlineRenderer.accept();
     },
 
     clearAll(): void {

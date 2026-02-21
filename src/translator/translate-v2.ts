@@ -1,5 +1,12 @@
+import { logToChannel } from '../output-channel';
 import { languages } from './languages';
 import { translate } from './translate';
+import {
+  ERR_LANG_NOT_SUPPORTED,
+  ERR_NETWORK,
+  ERR_RATE_LIMITED,
+  ERR_UNEXPECTED,
+} from './error-messages';
 
 /** Extract translation from mobile page HTML. */
 const RESULT_CONTAINER_PATTERN = /class="result-container">([\s\S]*?)</;
@@ -64,7 +71,7 @@ export async function translateV2(
   wrapLength?: number
 ): Promise<TranslateResult> {
   if (!languages.some((lang) => lang.code === toLang)) {
-    return { error: true, text: 'This language is not supported.' };
+    return { error: true, text: ERR_LANG_NOT_SUPPORTED };
   }
 
   try {
@@ -75,6 +82,16 @@ export async function translateV2(
           'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
       },
     });
+
+    if (response.status === 429) {
+      return { error: true, text: ERR_RATE_LIMITED };
+    }
+
+    if (!response.ok) {
+      logToChannel(`translate v2: HTTP ${response.status} ${response.statusText}`);
+      return { error: true, text: ERR_NETWORK };
+    }
+
     const data = await response.text();
 
     const match = data.match(RESULT_CONTAINER_PATTERN);
@@ -96,8 +113,8 @@ export async function translateV2(
       toLang,
       version: 'v2',
     };
-  } catch (error) {
-    console.error('Error translating with v2:', error);
-    return translate(input, fromLang, toLang);
+  } catch (error: unknown) {
+    logToChannel(`translate v2: unexpected error`, error);
+    return { error: true, text: ERR_UNEXPECTED };
   }
 }

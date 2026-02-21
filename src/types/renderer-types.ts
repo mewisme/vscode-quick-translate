@@ -12,6 +12,7 @@ export interface RenderContext {
   editor: vscode.TextEditor;
   selectionRange: vscode.Range;
   version?: TranslateBackendVersion;
+  sourceWasAuto?: boolean;
 }
 
 export interface TranslationRenderer {

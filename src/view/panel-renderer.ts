@@ -11,8 +11,15 @@ function escapeHtml(text: string): string {
     .replace(/'/g, '&#39;');
 }
 
-function buildHtml(context: RenderContext): string {
+function buildSourceLabel(context: RenderContext): string {
   const from = escapeHtml(context.from);
+  if (context.sourceWasAuto) {
+    return `Source <code>auto</code> &rarr; <code>${from}</code> <span class="detected">(detected)</span>`;
+  }
+  return `Source <code>${from}</code>`;
+}
+
+function buildHtml(context: RenderContext): string {
   const to = escapeHtml(context.to);
   const content = escapeHtml(context.translatedText.join('\n'));
   const versionBadge = context.version
@@ -62,6 +69,11 @@ function buildHtml(context: RenderContext): string {
     font-style: italic;
     margin: 6px 0 0 0;
   }
+  .detected {
+    font-size: 0.85em;
+    color: var(--vscode-descriptionForeground);
+    font-style: italic;
+  }
   pre {
     font-family: var(--vscode-editor-font-family);
     font-size: var(--vscode-editor-font-size);
@@ -78,7 +90,7 @@ function buildHtml(context: RenderContext): string {
 </head>
 <body>
 <div class="header">
-  <p class="meta">Source <code>${from}</code> &rarr; Target <code>${to}</code>${versionBadge}</p>
+  <p class="meta">${buildSourceLabel(context)} &rarr; Target <code>${to}</code>${versionBadge}</p>
   ${normalizedNote}
 </div>
 <pre>${content}</pre>

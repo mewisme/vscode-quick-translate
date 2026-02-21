@@ -20,3 +20,4 @@ commitlint.config.js
 **/*.ts
 **/.vscode-test.*
 *.vsix
+ROADMAP.md

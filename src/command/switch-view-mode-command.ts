@@ -18,5 +18,6 @@ export function runSwitchViewModeCommand(): () => Promise<void> {
       next,
       vscode.ConfigurationTarget.Global
     );
+    vscode.window.showInformationMessage(`Quick Translate: view mode → ${next}`);
   };
 }

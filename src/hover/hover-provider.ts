@@ -14,6 +14,7 @@ function buildHoverMarkdown(state: {
   to: string;
   normalized?: boolean;
   version?: 'v1' | 'v2';
+  sourceWasAuto?: boolean;
 }): vscode.MarkdownString {
   const md = new vscode.MarkdownString();
   md.isTrusted = false;
@@ -22,7 +23,11 @@ function buildHoverMarkdown(state: {
   const toEsc = escapeMarkdownInline(state.to);
 
   md.appendMarkdown('**Translation**\n\n');
-  md.appendMarkdown(`Source \`${fromEsc}\` → Target \`${toEsc}\``);
+  if (state.sourceWasAuto) {
+    md.appendMarkdown(`Source \`auto\` → \`${fromEsc}\` *(detected)* → Target \`${toEsc}\``);
+  } else {
+    md.appendMarkdown(`Source \`${fromEsc}\` → Target \`${toEsc}\``);
+  }
   if (state.version) {
     md.appendMarkdown(` · \`${state.version}\``);
   }

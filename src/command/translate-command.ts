@@ -95,14 +95,25 @@ export function runTranslateCommand(
             }
           : { error: true, text: [raw.text] };
       } else {
-        const linePromises = lines.map((line) =>
-          BLANK_LINE.test(line)
-            ? Promise.resolve({ ok: true as const, text: '' })
-            : doTranslate(line, from, to).then(toLineResult)
-        );
         const textArray: LineResult[] = await vscode.window.withProgress(
           { location: vscode.ProgressLocation.Window, title: 'Translating…', cancellable: false },
-          () => Promise.all(linePromises)
+          async (progress) => {
+            let done = 0;
+            const nonBlankCount = lines.filter((l) => !BLANK_LINE.test(l)).length;
+            const linePromises = lines.map((line) =>
+              BLANK_LINE.test(line)
+                ? Promise.resolve({ ok: true as const, text: '' })
+                : doTranslate(line, from, to).then((r) => {
+                    done++;
+                    progress.report({
+                      increment: (1 / nonBlankCount) * 100,
+                      message: `${done} / ${nonBlankCount} lines`,
+                    });
+                    return toLineResult(r);
+                  })
+            );
+            return Promise.all(linePromises);
+          }
         );
         const firstFailure = textArray.find((x): x is LineErr => !x.ok);
         if (firstFailure) {
@@ -124,8 +135,6 @@ export function runTranslateCommand(
       const msg = e instanceof Error ? e.message : 'Unexpected error';
       res = { error: true, text: [msg] };
     }
-
-    console.log('API response', res);
 
     if (!isTranslateSuccess(res)) {
       vscode.window.showErrorMessage(res.text.join('\n') || 'Translation failed.');
@@ -151,6 +160,8 @@ export function runTranslateCommand(
       docUri: editor.document.uri.toString(),
       normalized: !skipNorm && config.normalizeText,
       version: res.version,
+      sourceText: input,
+      sourceWasAuto: from === 'auto',
     });
 
     const renderContext: RenderContext = {
@@ -161,6 +172,7 @@ export function runTranslateCommand(
       editor,
       selectionRange: range,
       version: res.version,
+      sourceWasAuto: from === 'auto',
     };
 
     const renderer = coordinator.getRenderer(config.viewMode);

@@ -28,6 +28,7 @@ export interface QuickTranslateConfig {
   normalizeAcronyms: boolean;
   normalizeNumberBoundaries: boolean;
   trimExtraSpaces: boolean;
+  inlineSave: boolean;
 }
 
 export type TranslateBackendVersion = 'v1' | 'v2';

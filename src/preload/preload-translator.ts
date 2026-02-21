@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 
+import { logToChannel } from '../output-channel';
+
 let preloadPromise: Promise<void> | undefined;
 
 export function preloadTranslator(): Promise<void> {
@@ -20,21 +22,22 @@ async function runPreload(): Promise<void> {
     await Promise.all([
       warmConnection(),
     ]);
-  } catch {
+  } catch (error: unknown) {
+    const isAbort = error instanceof Error && error.name === 'AbortError';
+    if (!isAbort) {
+      logToChannel('preload: connection warm-up failed', error);
+    }
   } finally {
     statusBar.dispose();
   }
 }
 
 async function warmConnection(): Promise<void> {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 5000);
   try {
     await fetch('https://translate.google.com', {
       method: 'HEAD',
-      signal: controller.signal,
     });
   } finally {
-    clearTimeout(timeoutId);
+    logToChannel('preload: connection warm-up completed');
   }
 }

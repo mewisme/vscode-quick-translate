@@ -283,6 +283,11 @@
             "Show translation as inline decorations after each selected line."
           ],
           "description": "How to display the translation result. Invalid values fall back to hover."
+        },
+        "quickTranslate.inlineSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "When using inline view mode, automatically save the document after inserting or removing the translation block. Disabled by default to avoid interfering with unsaved-change workflows."
         }
       }
     },
@@ -290,7 +295,8 @@
       {
         "command": "quickTranslate.translateSelection",
         "title": "Quick Translate: Translate Selection",
-        "category": "Quick Translate"
+        "category": "Quick Translate",
+        "icon": "$(globe)"
       },
       {
         "command": "quickTranslate.translateWithoutNormalization",
@@ -310,7 +316,8 @@
       {
         "command": "quickTranslate.copyLastTranslation",
         "title": "Quick Translate: Copy Last Translation",
-        "category": "Quick Translate"
+        "category": "Quick Translate",
+        "icon": "$(copy)"
       },
       {
         "command": "quickTranslate.normalizationPreview",
@@ -326,6 +333,17 @@
         "command": "quickTranslate.switchViewMode",
         "title": "Switch View Mode",
         "category": "Quick Translate"
+      },
+      {
+        "command": "quickTranslate.rerunLastTranslation",
+        "title": "Quick Translate: Re-run Last Translation",
+        "category": "Quick Translate",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "quickTranslate.acceptTranslation",
+        "title": "Quick Translate: Accept Translation (Replace Selection)",
+        "category": "Quick Translate"
       }
     ],
     "submenus": [
@@ -338,7 +356,7 @@
       "editor/context": [
         {
           "submenu": "quickTranslate.menu",
-          "when": "editorTextFocus && editorHasSelection",
+          "when": "editorTextFocus",
           "group": "navigation"
         }
       ],
@@ -349,19 +367,51 @@
           "title": "Translate Selection"
         },
         {
+          "command": "quickTranslate.rerunLastTranslation",
+          "when": "editorTextFocus",
+          "title": "Re-run Last Translation"
+        },
+        {
+          "command": "quickTranslate.copyLastTranslation",
+          "when": "editorTextFocus",
+          "title": "Copy Last Translation"
+        },
+        {
+          "command": "quickTranslate.acceptTranslation",
+          "when": "editorTextFocus",
+          "title": "Accept Translation"
+        },
+        {
           "command": "quickTranslate.toggleNormalization",
           "when": "editorTextFocus && editorHasSelection",
           "title": "Toggle Normalization"
         },
         {
           "command": "quickTranslate.switchViewMode",
-          "when": "editorTextFocus && editorHasSelection",
+          "when": "editorTextFocus",
           "title": "Switch View Mode"
         },
         {
           "command": "quickTranslate.openSettings",
-          "when": "editorTextFocus && editorHasSelection",
+          "when": "editorTextFocus",
           "title": "Open Extension Settings"
+        }
+      ],
+      "editor/title": [
+        {
+          "command": "quickTranslate.translateSelection",
+          "when": "editorTextFocus && editorHasSelection",
+          "group": "navigation@1"
+        },
+        {
+          "command": "quickTranslate.rerunLastTranslation",
+          "when": "editorTextFocus",
+          "group": "navigation@2"
+        },
+        {
+          "command": "quickTranslate.copyLastTranslation",
+          "when": "editorTextFocus",
+          "group": "navigation@3"
         }
       ],
       "commandPalette": [
@@ -382,6 +432,12 @@
         },
         {
           "command": "quickTranslate.normalizationPreview"
+        },
+        {
+          "command": "quickTranslate.rerunLastTranslation"
+        },
+        {
+          "command": "quickTranslate.acceptTranslation"
         }
       ]
     },
