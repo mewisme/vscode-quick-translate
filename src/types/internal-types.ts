@@ -29,6 +29,18 @@ export interface QuickTranslateConfig {
   normalizeNumberBoundaries: boolean;
   trimExtraSpaces: boolean;
   inlineSave: boolean;
+  maxLineCount: number;
+  largeSelectionThreshold: number;
+  targetLanguages: string;
+  historySize: number;
+}
+
+export interface HistoryEntry {
+  sourceText: string;
+  translatedText: string[];
+  from: string;
+  to: string;
+  timestamp: Date;
 }
 
 export type TranslateBackendVersion = 'v1' | 'v2';

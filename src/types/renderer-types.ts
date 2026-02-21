@@ -4,6 +4,11 @@ import type { TranslateBackendVersion } from './internal-types';
 
 export type ViewMode = 'hover' | 'panel' | 'inline';
 
+export interface MultiTargetResult {
+  to: string;
+  text: string[];
+}
+
 export interface RenderContext {
   translatedText: string[];
   from: string;
@@ -13,6 +18,7 @@ export interface RenderContext {
   selectionRange: vscode.Range;
   version?: TranslateBackendVersion;
   sourceWasAuto?: boolean;
+  multiTarget?: MultiTargetResult[];
 }
 
 export interface TranslationRenderer {

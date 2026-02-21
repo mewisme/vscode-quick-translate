@@ -19,15 +19,36 @@ function buildSourceLabel(context: RenderContext): string {
   return `Source <code>${from}</code>`;
 }
 
+function buildSingleSection(_to: string, text: string[]): string {
+  const content = escapeHtml(text.join('\n'));
+  return `<pre>${content}</pre>`;
+}
+
+function buildMultiSections(context: RenderContext): string {
+  if (!context.multiTarget || context.multiTarget.length === 0) {
+    return buildSingleSection(context.to, context.translatedText);
+  }
+  return context.multiTarget.map((target) => {
+    const to = escapeHtml(target.to);
+    const content = escapeHtml(target.text.join('\n'));
+    return `<div class="target-section">
+  <div class="target-label">Target <code>${to}</code></div>
+  <pre>${content}</pre>
+</div>`;
+  }).join('\n');
+}
+
 function buildHtml(context: RenderContext): string {
-  const to = escapeHtml(context.to);
-  const content = escapeHtml(context.translatedText.join('\n'));
   const versionBadge = context.version
     ? ` &middot; <code>${escapeHtml(context.version)}</code>`
     : '';
   const normalizedNote = context.normalized
     ? '<p class="note">Normalization applied</p>'
     : '';
+  const isMulti = context.multiTarget && context.multiTarget.length > 1;
+  const targetInfo = isMulti
+    ? `${context.multiTarget!.length} languages`
+    : `Target <code>${escapeHtml(context.to)}</code>`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -86,14 +107,26 @@ function buildHtml(context: RenderContext): string {
     margin: 0;
     overflow-x: auto;
   }
+  .target-section {
+    margin-bottom: 16px;
+  }
+  .target-section:last-child {
+    margin-bottom: 0;
+  }
+  .target-label {
+    font-size: 0.85em;
+    color: var(--vscode-descriptionForeground);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
 <div class="header">
-  <p class="meta">${buildSourceLabel(context)} &rarr; Target <code>${to}</code>${versionBadge}</p>
+  <p class="meta">${buildSourceLabel(context)} &rarr; ${targetInfo}${versionBadge}</p>
   ${normalizedNote}
 </div>
-<pre>${content}</pre>
+${buildMultiSections(context)}
 </body>
 </html>`;
 }
