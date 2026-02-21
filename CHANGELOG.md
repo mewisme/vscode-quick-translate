@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/mewisme/vscode-quick-translate/compare/v0.1.11...v0.2.0) (2026-02-21)
+
+
+### Documentation
+
+* update CLAUDE.md for improved module descriptions and command registration process ([9de1474](https://github.com/mewisme/vscode-quick-translate/commit/9de14742a2b34966f9ba45c43d86e61496936534))
+
+
+### Added
+
+* add unit tests and improve translation backend ([fb3b37b](https://github.com/mewisme/vscode-quick-translate/commit/fb3b37b6d74152e77cc7e402a4417cfa2924a95c))
+* enhance translation functionality and user experience ([0e688ce](https://github.com/mewisme/vscode-quick-translate/commit/0e688ce27ee23adf48af6da4043eb9dae1a0a09e))
+* implement translation history and caching features ([e965bcf](https://github.com/mewisme/vscode-quick-translate/commit/e965bcf10f804543e4e3bf415ac682b7d256c961))
+
 ### [0.1.11](https://github.com/mewisme/vscode-quick-translate/compare/v0.1.10...v0.1.11) (2026-02-20)
 
 
