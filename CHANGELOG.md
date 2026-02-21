@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/mewisme/vscode-quick-translate/compare/v0.2.0...v0.2.1) (2026-02-21)
+
+
+### Documentation
+
+* update README.md to reflect new features and command changes ([a1dd1ad](https://github.com/mewisme/vscode-quick-translate/commit/a1dd1ad1fd895a9238a94285a8dc630596039a06))
+
 ## [0.2.0](https://github.com/mewisme/vscode-quick-translate/compare/v0.1.11...v0.2.0) (2026-02-21)
 
 

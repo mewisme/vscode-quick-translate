@@ -2,7 +2,7 @@
   "name": "vscode-quick-translate",
   "displayName": "VSCode Quick Translate",
   "description": "Translate selected or entered text with inline hover results. Optional normalization for identifiers (camelCase, snake_case, etc.). Copy last translation, normalization preview, and quick settings. Uses Google Translate; no API key required.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "mewisme",
   "engines": {
     "vscode": "^1.84.0"
