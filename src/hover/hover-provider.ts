@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import type { HoverStateController } from './hover-state';
+import type { HoverStateController, HoverStateData } from './hover-state';
 
 const HOVER_DISPLAY_MAX_LENGTH = 4000;
 
@@ -51,33 +51,45 @@ function buildHoverMarkdown(state: {
   return md;
 }
 
-function createProvideHover(controller: HoverStateController) {
-  return function provideHover(
-    doc: vscode.TextDocument,
-    position: vscode.Position
-  ): vscode.ProviderResult<vscode.Hover> {
-    if (!controller.getShouldShowHover()) {
-      return;
-    }
-    const state = controller.getState();
-    const lastRange = state?.range;
-    if (lastRange === undefined || state === undefined) {
-      return;
-    }
-    if (doc.uri.toString() !== state.docUri) {
-      return;
-    }
-    if (position.compareTo(lastRange.start) < 0 || position.compareTo(lastRange.end) >= 0) {
-      return;
-    }
-    return new vscode.Hover(buildHoverMarkdown(state), state.range);
-  };
+function buildCachedHover(data: HoverStateData): vscode.Hover {
+  return new vscode.Hover(buildHoverMarkdown(data), data.range);
 }
 
 export function registerHoverProvider(
   controller: HoverStateController
 ): vscode.Disposable {
-  return vscode.languages.registerHoverProvider('*', {
-    provideHover: createProvideHover(controller),
+  let cachedHover: { hover: vscode.Hover; docUri: string; range: vscode.Range } | undefined;
+
+  const stateChangeListener = controller.onStateChange((data) => {
+    if (data === undefined) {
+      cachedHover = undefined;
+    } else {
+      cachedHover = {
+        hover: buildCachedHover(data),
+        docUri: data.docUri,
+        range: data.range,
+      };
+    }
   });
+
+  const providerRegistration = vscode.languages.registerHoverProvider('*', {
+    provideHover(
+      doc: vscode.TextDocument,
+      position: vscode.Position
+    ): vscode.ProviderResult<vscode.Hover> {
+      if (!controller.getShouldShowHover() || cachedHover === undefined) {
+        return;
+      }
+      if (doc.uri.toString() !== cachedHover.docUri) {
+        return;
+      }
+      const { range } = cachedHover;
+      if (position.compareTo(range.start) < 0 || position.compareTo(range.end) >= 0) {
+        return;
+      }
+      return cachedHover.hover;
+    },
+  });
+
+  return vscode.Disposable.from(providerRegistration, stateChangeListener);
 }

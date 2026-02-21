@@ -1,17 +1,26 @@
 import { translate, translateV2 } from '../translator';
 
 /**
- * Tests for translate functions only (v1, v2).
+ * Integration tests for translate functions (v1, v2).
  * Run: pnpm run test:translate
- * Requires network (hits Google Translate).
+ *
+ * These tests hit the live Google Translate API and require network access.
+ * They are skipped unless the QUICK_TRANSLATE_INTEGRATION_TESTS environment
+ * variable is set to "1", so that CI can run the fast unit suite without
+ * external dependencies.
+ *
+ *   QUICK_TRANSLATE_INTEGRATION_TESTS=1 pnpm run test:translate
  */
 import assert from 'node:assert';
 import test from 'node:test';
 
+const RUN_INTEGRATION = process.env['QUICK_TRANSLATE_INTEGRATION_TESTS'] === '1';
+const maybeSkip = RUN_INTEGRATION ? test : test.skip;
+
 const TIMEOUT_MS = 15_000;
 const SAMPLE = 'hello';
 
-test('translate (v1)', { timeout: TIMEOUT_MS }, async (t) => {
+maybeSkip('translate (v1)', { timeout: TIMEOUT_MS }, async (t) => {
   await t.test('returns success with version v1 and expected shape', async () => {
     const res = await translate(SAMPLE, 'auto', 'vi');
     assert.strictEqual(res.error, false);
@@ -34,7 +43,7 @@ test('translate (v1)', { timeout: TIMEOUT_MS }, async (t) => {
   });
 });
 
-test('translateV2', { timeout: TIMEOUT_MS }, async (t) => {
+maybeSkip('translateV2', { timeout: TIMEOUT_MS }, async (t) => {
   await t.test('returns success with version v2 or v1 (fallback) and expected shape', async () => {
     const res = await translateV2(SAMPLE, 'auto', 'vi');
     assert.strictEqual(res.error, false);

@@ -7,6 +7,7 @@ import {
   ERR_RATE_LIMITED,
   ERR_UNEXPECTED,
 } from './error-messages';
+import { withRetry } from './retry';
 
 interface GoogleTranslateSuccess {
   error: false;
@@ -37,14 +38,11 @@ function parseResponse(data: unknown[][]): { text: string; fromLang: string } {
   return { text, fromLang };
 }
 
-export async function translate(
+async function attemptTranslate(
   input: string,
-  fromLang: string = 'auto',
-  toLang: string = 'vi'
+  fromLang: string,
+  toLang: string
 ): Promise<TranslateResult> {
-  if (!languages.some((lang) => lang.code === toLang)) {
-    return { error: true, text: ERR_LANG_NOT_SUPPORTED };
-  }
   try {
     const url = `https://translate.google.com/translate_a/single?client=gtx&sl=${fromLang}&tl=${toLang}&dt=t&q=${encodeURIComponent(input)}`;
     const response = await fetch(url);
@@ -71,4 +69,23 @@ export async function translate(
     logToChannel(`translate v1: unexpected error`, error);
     return { error: true, text: ERR_UNEXPECTED };
   }
+}
+
+function isTransientError(result: TranslateResult): boolean {
+  if (!result.error) {
+    return false;
+  }
+  // Rate-limit and language errors are not transient; network/unexpected errors are.
+  return result.text !== ERR_RATE_LIMITED && result.text !== ERR_LANG_NOT_SUPPORTED;
+}
+
+export async function translate(
+  input: string,
+  fromLang: string = 'auto',
+  toLang: string = 'vi'
+): Promise<TranslateResult> {
+  if (!languages.some((lang) => lang.code === toLang)) {
+    return { error: true, text: ERR_LANG_NOT_SUPPORTED };
+  }
+  return withRetry(() => attemptTranslate(input, fromLang, toLang), isTransientError);
 }

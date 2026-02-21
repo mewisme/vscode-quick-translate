@@ -7,17 +7,20 @@ import {
   ERR_RATE_LIMITED,
   ERR_UNEXPECTED,
 } from './error-messages';
+import { extractByClasses } from './html-extractor';
+import { withRetry } from './retry';
 
-/** Extract translation from mobile page HTML. */
-const RESULT_CONTAINER_PATTERN = /class="result-container">([\s\S]*?)</;
+/**
+ * Class names searched in order when extracting the translation from the
+ * Google Translate mobile page. The primary selector is `result-container`;
+ * the others are known fallbacks in case Google restructures its markup.
+ */
+const RESULT_CLASS_CANDIDATES = ['result-container', 't0', 'result-box'];
 
 export type TranslateResult =
   | { error: false; text: string; fromLang: string; toLang: string; version: 'v1' | 'v2' }
   | { error: true; text: string };
 
-/**
- * Unescape HTML entities (equivalent to Python's html.unescape).
- */
 function unescapeHtml(s: string): string {
   return s
     .replace(/&amp;/g, '&')
@@ -31,9 +34,6 @@ function unescapeHtml(s: string): string {
     );
 }
 
-/**
- * Wrap text to a maximum line length (equivalent to Python's textwrap.wrap).
- */
 function wrapText(text: string, width: number): string {
   if (width <= 0) {
     return text;
@@ -55,25 +55,12 @@ function wrapText(text: string, width: number): string {
   return lines.join('\n');
 }
 
-/**
- * Translate text via Google Translate mobile page (version 2).
- * Mirrors the Flow Launcher plugin: fetch HTML and parse result-container.
- *
- * @param input - Text to translate
- * @param fromLang - Source language code (default 'auto')
- * @param toLang - Target language code (default 'vi')
- * @param wrapLength - Optional max line length; if set, result is wrapped
- */
-export async function translateV2(
+async function attemptTranslateV2(
   input: string,
-  fromLang: string = 'auto',
-  toLang: string = 'vi',
+  fromLang: string,
+  toLang: string,
   wrapLength?: number
 ): Promise<TranslateResult> {
-  if (!languages.some((lang) => lang.code === toLang)) {
-    return { error: true, text: ERR_LANG_NOT_SUPPORTED };
-  }
-
   try {
     const url = `https://translate.google.com/m?tl=${encodeURIComponent(toLang)}&sl=${encodeURIComponent(fromLang)}&q=${encodeURIComponent(input)}`;
     const response = await fetch(url, {
@@ -94,8 +81,7 @@ export async function translateV2(
 
     const data = await response.text();
 
-    const match = data.match(RESULT_CONTAINER_PATTERN);
-    const raw = match ? match[1] : '';
+    const raw = extractByClasses(data, RESULT_CLASS_CANDIDATES) ?? '';
     const result = unescapeHtml(raw);
 
     if (!result) {
@@ -117,4 +103,26 @@ export async function translateV2(
     logToChannel(`translate v2: unexpected error`, error);
     return { error: true, text: ERR_UNEXPECTED };
   }
+}
+
+function isTransientErrorV2(result: TranslateResult): boolean {
+  if (!result.error) {
+    return false;
+  }
+  return result.text !== ERR_RATE_LIMITED && result.text !== ERR_LANG_NOT_SUPPORTED;
+}
+
+export async function translateV2(
+  input: string,
+  fromLang: string = 'auto',
+  toLang: string = 'vi',
+  wrapLength?: number
+): Promise<TranslateResult> {
+  if (!languages.some((lang) => lang.code === toLang)) {
+    return { error: true, text: ERR_LANG_NOT_SUPPORTED };
+  }
+  return withRetry(
+    () => attemptTranslateV2(input, fromLang, toLang, wrapLength),
+    isTransientErrorV2
+  );
 }

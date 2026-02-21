@@ -21,6 +21,7 @@ import { getQuickTranslateConfig } from './config/get-config';
 
 let translationCacheRef: ReturnType<typeof createTranslationCache> | undefined;
 let translationHistoryRef: ReturnType<typeof createTranslationHistory> | undefined;
+let coordinatorRef: ReturnType<typeof createTranslationViewCoordinator> | undefined;
 
 export function activate(context: vscode.ExtensionContext): void {
   initOutputChannel();
@@ -30,6 +31,7 @@ export function activate(context: vscode.ExtensionContext): void {
   const config = getQuickTranslateConfig();
   translationCacheRef = createTranslationCache();
   translationHistoryRef = createTranslationHistory(config.historySize);
+  coordinatorRef = coordinator;
 
   const cache = translationCacheRef;
   const history = translationHistoryRef;
@@ -92,7 +94,11 @@ export function activate(context: vscode.ExtensionContext): void {
 }
 
 export function deactivate(): void {
+  coordinatorRef?.dispose();
   translationCacheRef?.clear();
   translationHistoryRef?.clear();
   disposeOutputChannel();
+  coordinatorRef = undefined;
+  translationCacheRef = undefined;
+  translationHistoryRef = undefined;
 }

@@ -21,16 +21,21 @@ export interface HoverStateController {
   setShouldShowHover(value: boolean): void;
   getShouldShowHover(): boolean;
   reset(): void;
+  /** Fires whenever state is set or reset. Consumers subscribe here instead of polling. */
+  readonly onStateChange: vscode.Event<HoverStateData | undefined>;
 }
 
 export function createHoverState(): HoverStateController {
   let state: HoverStateData | undefined;
   let stateVersion = 0;
   let shouldShowHover = false;
+  const emitter = new vscode.EventEmitter<HoverStateData | undefined>();
+
   return {
     setState(data: HoverStateData): void {
       state = data;
       stateVersion += 1;
+      emitter.fire(data);
     },
     getState(): HoverStateData | undefined {
       return state;
@@ -47,6 +52,10 @@ export function createHoverState(): HoverStateController {
     reset(): void {
       state = undefined;
       shouldShowHover = false;
+      emitter.fire(undefined);
+    },
+    get onStateChange(): vscode.Event<HoverStateData | undefined> {
+      return emitter.event;
     },
   };
 }

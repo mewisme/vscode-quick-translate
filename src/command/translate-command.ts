@@ -5,7 +5,8 @@ import type { HoverStateController } from '../hover/hover-state';
 import { getNormalizeOptions } from '../normalize/normalize-config';
 import { normalizeInput } from '../normalize/normalize-input';
 import { detectIdentifierPattern } from '../normalize/detect-identifier';
-import { translate, translateV2 } from '../translator';
+import { createTranslationBackend, type TranslationBackend } from '../translator/backend';
+import { mapConcurrent } from '../utils/concurrency';
 import {
   isTranslateSuccess,
   type TranslateBackendVersion,
@@ -46,10 +47,6 @@ function toLineResult(r: TranslateApiResult): LineResult {
   return { ok: false, error: r.text };
 }
 
-function getTranslateFn(version: 'v1' | 'v2') {
-  return version === 'v2' ? translateV2 : translate;
-}
-
 function parseTargetLanguages(raw: string): string[] {
   return raw
     .split(',')
@@ -61,7 +58,7 @@ async function translateLines(
   lines: string[],
   from: string,
   to: string,
-  doTranslate: ReturnType<typeof getTranslateFn>
+  backend: TranslationBackend
 ): Promise<TranslateResult> {
   const hasLineBreaks = lines.length > 1;
   const textToTranslate = lines.join('\n');
@@ -69,7 +66,7 @@ async function translateLines(
   if (!hasLineBreaks) {
     const raw = await vscode.window.withProgress(
       { location: vscode.ProgressLocation.Window, title: 'Translating…', cancellable: false },
-      () => doTranslate(textToTranslate, from, to)
+      () => backend.translate(textToTranslate, from, to)
     );
     return raw.error === false
       ? {
@@ -87,10 +84,10 @@ async function translateLines(
     async (progress) => {
       let done = 0;
       const nonBlankCount = lines.filter((l) => !BLANK_LINE.test(l)).length;
-      const linePromises = lines.map((line) =>
+      return mapConcurrent<string, LineResult>(lines, 3, (line) =>
         BLANK_LINE.test(line)
           ? Promise.resolve({ ok: true as const, text: '' })
-          : doTranslate(line, from, to).then((r) => {
+          : backend.translate(line, from, to).then((r) => {
               done++;
               progress.report({
                 increment: (1 / nonBlankCount) * 100,
@@ -99,7 +96,6 @@ async function translateLines(
               return toLineResult(r);
             })
       );
-      return Promise.all(linePromises);
     }
   );
 
@@ -131,7 +127,7 @@ export function runTranslateCommand(
     const config = getQuickTranslateConfig();
     const from = config.sourceLanguage;
     const to = config.targetLanguage;
-    const doTranslate = getTranslateFn(config.translateVersion);
+    const backend = createTranslationBackend(config.translateVersion);
 
     const editor = vscode.window.activeTextEditor;
     const selected = editor?.document.getText(editor.selection) ?? '';
@@ -195,7 +191,7 @@ export function runTranslateCommand(
     const targetLangs = parseTargetLanguages(config.targetLanguages);
     if (targetLangs.length > 0) {
       await runMultiTargetTranslation(
-        lines, textToTranslate, from, targetLangs, doTranslate,
+        lines, textToTranslate, from, targetLangs, backend,
         config, skipNorm, input, editor, hoverState, coordinator, cache, history
       );
       return;
@@ -216,7 +212,7 @@ export function runTranslateCommand(
       };
     } else {
       try {
-        res = await translateLines(lines, from, to, doTranslate);
+        res = await translateLines(lines, from, to, backend);
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : 'Unexpected error';
         res = { error: true, text: [msg] };
@@ -290,7 +286,7 @@ async function runMultiTargetTranslation(
   textToTranslate: string,
   from: string,
   targetLangs: string[],
-  doTranslate: ReturnType<typeof getTranslateFn>,
+  backend: TranslationBackend,
   config: ReturnType<typeof import('../config/get-config').getQuickTranslateConfig>,
   skipNorm: boolean,
   input: string,
@@ -319,7 +315,7 @@ async function runMultiTargetTranslation(
       };
     } else {
       try {
-        res = await translateLines(lines, from, targetLang, doTranslate);
+        res = await translateLines(lines, from, targetLang, backend);
       } catch (e: unknown) {
         const msg = e instanceof Error ? e.message : 'Unexpected error';
         res = { error: true, text: [msg] };

@@ -577,6 +577,7 @@
     "lint": "eslint src",
     "test": "vscode-test",
     "test:translate": "node --test --import tsx src/test/translate.test.ts",
+    "test:unit": "node --test --import tsx src/test/unit/*.test.ts",
     "prepare": "husky"
   },
   "devDependencies": {
