@@ -47,21 +47,23 @@ Single-entry TypeScript bundle: `src/extension.ts` → `dist/extension.js` via e
 
 ### Module map
 
-| Directory | Purpose |
+| Path | Purpose |
 |---|---|
 | `src/command/` | One file per registered VS Code command |
-| `src/view/` | Three renderers (hover/panel/inline) + coordinator |
-| `src/hover/` | Shared hover state + `HoverProvider` registration |
-| `src/translator/` | Google Translate v1 and v2 API wrappers |
-| `src/normalize/` | Code-identifier text normalization |
+| `src/view/` | Three renderers (`HoverRenderer`, `PanelRenderer`, `InlineRenderer`) + coordinator |
+| `src/hover/` | Shared `HoverStateController` + `HoverProvider` registration |
+| `src/translator/` | Google Translate v1 (`translate.ts`) and v2 (`translate-v2.ts`) API wrappers; `error-messages.ts` for shared error constants |
+| `src/normalize/` | `normalize-input.ts` (transforms identifiers), `normalize-config.ts` (extracts `NormalizeOptions` from config) |
 | `src/config/` | Reads `quickTranslate.*` workspace settings |
 | `src/types/` | Shared interfaces (`internal-types.ts`, `renderer-types.ts`) |
 | `src/preload/` | Warms up the translator on extension activation |
+| `src/output-channel.ts` | Singleton "Quick Translate" output channel; use `logToChannel()` for diagnostic logging |
+| `src/status-bar.ts` | Status bar item showing current target language; refreshes on config changes |
 
 ### Adding a new command
 
 1. Create `src/command/<name>-command.ts` exporting a factory `run<Name>Command(...)`
-2. Register in `src/extension.ts` via `vscode.commands.registerCommand`
+2. Import and register in `src/extension.ts` via `vscode.commands.registerCommand` inside `context.subscriptions.push(...)`
 3. Declare in `package.json` under `contributes.commands` (and `menus` if needed)
 
 ### Adding a new renderer
