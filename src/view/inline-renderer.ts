@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import type { RenderContext, TranslationRenderer } from '../types/renderer-types';
 
 import { getQuickTranslateConfig } from '../config/get-config';
+import { getCommentSyntax } from '../utils/comment-syntax';
 
 const DISMISS_GRACE_MS = 100;
 
@@ -89,13 +90,30 @@ export class InlineRenderer implements TranslationRenderer {
     const insertLine = lastLine + 1;
     const indent = getLeadingWhitespace(doc.lineAt(firstLine));
 
-    const separator = indent + '\n--- translation ---';
+    const syntax = getCommentSyntax(doc.languageId);
+    const cleanLines = translatedText.map(line => line.replace(/\r$/, ''));
 
-    const blockLines = translatedText.map(line =>
-      indent + line.replace(/\r$/, '')
-    );
-
-    const blockContent = [separator, ...blockLines, '\n'].join('\n');
+    let blockContent: string;
+    if (syntax?.type === 'block') {
+      blockContent = [
+        indent + syntax.start + ' translation',
+        ...cleanLines.map(line => indent + line),
+        indent + syntax.end,
+        '\n',
+      ].join('\n');
+    } else if (syntax?.type === 'line') {
+      blockContent = [
+        indent + syntax.prefix + ' translation',
+        ...cleanLines.map(line => indent + syntax.prefix + ' ' + line),
+        '\n',
+      ].join('\n');
+    } else {
+      blockContent = [
+        indent + '--- translation ---',
+        ...cleanLines.map(line => indent + line),
+        '\n',
+      ].join('\n');
+    }
 
     const safeInsertLine =
       insertLine >= doc.lineCount ? doc.lineCount : insertLine;

@@ -21,3 +21,4 @@ commitlint.config.js
 **/.vscode-test.*
 *.vsix
 ROADMAP.md
+CLAUDE.md
